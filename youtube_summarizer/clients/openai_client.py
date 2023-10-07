@@ -101,3 +101,39 @@ class OpenAIClient:
 
         message_dict: dict = response["choices"][0]["message"]
         return message_dict
+
+    async def generate_chat_completion_async(
+        self,
+        user_prompt: str,
+        *,
+        model: str = "gpt-3.5-turbo-0613",
+        system_prompt: str | None = None,
+        temperature: float = 0.5,
+    ) -> dict:
+        """Generate a chat completion.
+
+        Args:
+            user_prompt: The user prompt to generate the chat completion from.
+            model: The model to use for the API.
+            temperature: The temperature to use for the model.
+
+        Returns:
+            The response from the model.
+        """
+        messages: list[ChatCompletionMessage] = [
+            ChatCompletionMessage(role=ChatRole.USER, content=user_prompt),
+        ]
+
+        if system_prompt:
+            messages.insert(
+                0, ChatCompletionMessage(role=ChatRole.SYSTEM, content=system_prompt)
+            )
+
+        response: Any = await openai.ChatCompletion.acreate(
+            model=model,
+            messages=messages,
+            temperature=temperature,
+        )
+
+        message_dict: dict = response["choices"][0]["message"]
+        return message_dict
