@@ -44,7 +44,9 @@ class YouTubeVideoSummarizer:
         summary: str = ""
 
         for line in transcript:
-            if len(transcript_str + line) >= token_limit:
+            encodings: list[int] = self._encoding.encode(transcript_str + line)
+
+            if len(encodings) >= token_limit:
                 summary += self._summarize_chunk(transcript_str, model)
                 transcript_str = ""
 
@@ -52,6 +54,7 @@ class YouTubeVideoSummarizer:
 
         if transcript_str:
             summary += self._summarize_chunk(transcript_str, model)
+            transcript_str = ""
 
         return summary
 
