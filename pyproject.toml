@@ -12,6 +12,9 @@ openai = "^0.28.1"
 tiktoken = "^0.5.1"
 youtube-transcript-api = "^0.6.1"
 
+[tool.poetry.group.dev]
+optional = true
+
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.5.1"
 black = "^23.9.1"

@@ -1,0 +1,22 @@
+image: python:latest
+
+stages:
+  - test
+  - deploy
+
+pytest:
+  stage: test
+  script:
+    - pip install poetry
+    - poetry install --with dev
+    - pytest
+
+deploy-package:
+  stage: deploy
+  script:
+    - pip install poetry
+    - poetry install
+    - poetry build
+    - poetry publish --username gitlab-ci-token --password $CI_JOB_TOKEN --repository $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/pypi dist/*
+  only:
+    - main
