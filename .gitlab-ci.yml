@@ -8,7 +8,7 @@ pytest:
   stage: test
   script:
     - poetry install --with dev
-    - pytest
+    - poetry run pytest
 
 deploy-package:
   stage: deploy
