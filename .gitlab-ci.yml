@@ -1,4 +1,4 @@
-image: airdock/python-poetry
+image: registry.gitlab.com/jakecyr/youtube-video-summarizer:latest
 
 stages:
   - test
