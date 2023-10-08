@@ -11,6 +11,7 @@ python = "^3.10"
 openai = "^0.28.1"
 tiktoken = "^0.5.1"
 youtube-transcript-api = "^0.6.1"
+loguru = "^0.7.2"
 
 [tool.poetry.group.dev]
 optional = true
