@@ -86,7 +86,7 @@ def main() -> None:
     else:
         summary = summarizer.summarize(youtube_video)
 
-    logger.info(f"Summarized video.")
+    logger.info("Summarized video.")
     logger.info(summary)
 
 

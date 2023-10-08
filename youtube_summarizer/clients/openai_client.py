@@ -85,7 +85,7 @@ class OpenAIClient:
         Returns:
             The response from the model.
         """
-        logger.debug(f"Generating chat completion...")
+        logger.debug("Generating chat completion...")
 
         messages: list[ChatCompletionMessage] = [
             ChatCompletionMessage(role=ChatRole.USER, content=user_prompt),
@@ -123,7 +123,7 @@ class OpenAIClient:
         Returns:
             The response from the model.
         """
-        logger.debug(f"Generating async chat completion...")
+        logger.debug("Generating async chat completion...")
 
         messages: list[ChatCompletionMessage] = [
             ChatCompletionMessage(role=ChatRole.USER, content=user_prompt),

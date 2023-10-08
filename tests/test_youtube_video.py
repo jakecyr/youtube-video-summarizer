@@ -17,13 +17,13 @@ def test_parses_id_from_id() -> None:
 def test_empty_str_raises_value_error() -> None:
     url: str = ""
     with pytest.raises(ValueError, match="The video URL or ID is empty"):
-        parser = YouTubeVideo(url)
+        YouTubeVideo(url)
 
 
 def test_none_raises_value_error() -> None:
     url: str | None = None
     with pytest.raises(ValueError, match="The video URL or ID is empty"):
-        parser = YouTubeVideo(url)  # type: ignore
+        YouTubeVideo(url)  # type: ignore
 
 
 def test_url_without_query_string_raises_value_error() -> None:
