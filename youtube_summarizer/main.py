@@ -82,12 +82,17 @@ def main() -> None:
     logger.info(f"Summarizing video {args.video_url_or_id}...")
 
     if args.run_async:
-        summary: str = asyncio.run(summarizer.summarize_async(youtube_video))
+        summary, prompt_tokens, completion_tokens = asyncio.run(
+            summarizer.summarize_async(youtube_video)
+        )
     else:
-        summary = summarizer.summarize(youtube_video)
+        summary, prompt_tokens, completion_tokens = summarizer.summarize(youtube_video)
 
     logger.info("Summarized video.")
     logger.info(summary)
+    logger.info(f"Prompt tokens: {prompt_tokens}")
+    logger.info(f"Completion tokens: {completion_tokens}")
+    logger.info(f"Total tokens: {prompt_tokens + completion_tokens}")
 
 
 if __name__ == "__main__":

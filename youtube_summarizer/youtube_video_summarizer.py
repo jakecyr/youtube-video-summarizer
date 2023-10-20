@@ -51,14 +51,14 @@ class YouTubeVideoSummarizer:
         )
         self._temperature: float = temperature
 
-    def summarize(self, youtube_video: YouTubeVideo) -> str:
+    def summarize(self, youtube_video: YouTubeVideo) -> tuple[str, int, int]:
         """Summarize a YouTube video.
 
         Args:
           video_url: The URL of the video to summarize.
 
         Returns:
-          A summary of the video.
+          A summary of the video and the prompt and completion tokens used.
         """
         logger.debug(f"Summarizing video {youtube_video.id}...")
 
@@ -70,23 +70,29 @@ class YouTubeVideoSummarizer:
         )
         summaries: list[str] = []
         all_chunks: list[str] = []
+        prompt_tokens = 0
+        completion_tokens = 0
 
         for chunk in transcript_chunks:
-            summary: str = self._summarize_chunk(chunk, self._model_name)
+            summary, usage = self._summarize_chunk(chunk, self._model_name)
             logger.debug(f"Summarized chunk: {summary}")
             summaries.append(summary)
             all_chunks.append(chunk)
+            prompt_tokens += usage["prompt_tokens"]
+            completion_tokens += usage["completion_tokens"]
 
-        return "\n".join(summaries)
+        return "\n".join(summaries), prompt_tokens, completion_tokens
 
-    async def summarize_async(self, youtube_video: YouTubeVideo) -> str:
+    async def summarize_async(
+        self, youtube_video: YouTubeVideo
+    ) -> tuple[str, int, int]:
         """Summarize a YouTube video.
 
         Args:
           video_url: The URL of the video to summarize.
 
         Returns:
-          A summary of the video.
+          A summary of the video and the prompt and completion tokens used.
         """
         logger.debug(f"Summarizing video {youtube_video.id}...")
 
@@ -105,46 +111,53 @@ class YouTubeVideoSummarizer:
                 )
             )
 
-        summaries: list[str] = await asyncio.gather(*tasks)
+        summaries, usage_dicts = await asyncio.gather(*tasks)
 
-        return "\n".join(summaries)
+        prompt_tokens = 0
+        completion_tokens = 0
 
-    def _summarize_chunk(self, chunk: str, model: str) -> str:
+        for usage_dict in usage_dicts:
+            prompt_tokens += usage_dict["prompt_tokens"]
+            completion_tokens += usage_dict["completion_tokens"]
+
+        return "\n".join(summaries), prompt_tokens, completion_tokens
+
+    def _summarize_chunk(self, chunk: str, model: str) -> tuple[str, dict]:
         """Summarize a chunk of text.
 
         Args:
           chunk: The chunk of text to summarize.
 
         Returns:
-          The summarized chunk.
+          The summarized chunk and usage.
         """
         logger.debug(f"Summarizing chunk with model {model}...")
 
-        response: dict = self._openai_client.generate_chat_completion(
+        response, usage = self._openai_client.generate_chat_completion(
             user_prompt=chunk,
             model=model,
             temperature=self._temperature,
             system_prompt=self._system_prompt,
         )
 
-        return response["content"]
+        return response["content"], usage
 
-    async def _summarize_chunk_async(self, chunk: str, model: str) -> str:
+    async def _summarize_chunk_async(self, chunk: str, model: str) -> tuple[str, dict]:
         """Summarize a chunk of text.
 
         Args:
           chunk: The chunk of text to summarize.
 
         Returns:
-          The summarized chunk.
+          The summarized chunk and usage.
         """
         logger.debug(f"Summarizing chunk async with model {model}...")
 
-        response: dict = await self._openai_client.generate_chat_completion_async(
+        response, usage = await self._openai_client.generate_chat_completion_async(
             user_prompt=chunk,
             model=model,
             temperature=self._temperature,
             system_prompt=self._system_prompt,
         )
 
-        return response["content"]
+        return response["content"], usage

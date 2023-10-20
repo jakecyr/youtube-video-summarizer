@@ -74,7 +74,7 @@ class OpenAIClient:
         model: str = "gpt-3.5-turbo-0613",
         system_prompt: str | None = None,
         temperature: float = 0.5,
-    ) -> dict:
+    ) -> tuple[dict, dict]:
         """Generate a chat completion.
 
         Args:
@@ -83,7 +83,7 @@ class OpenAIClient:
             temperature: The temperature to use for the model.
 
         Returns:
-            The response from the model.
+            The response from the model and the usage information.
         """
         logger.debug("Generating chat completion...")
 
@@ -103,7 +103,8 @@ class OpenAIClient:
         )
 
         message_dict: dict = response["choices"][0]["message"]
-        return message_dict
+        usage_dict: dict = response["usage"]
+        return message_dict, usage_dict
 
     async def generate_chat_completion_async(
         self,
@@ -112,7 +113,7 @@ class OpenAIClient:
         model: str = "gpt-3.5-turbo-0613",
         system_prompt: str | None = None,
         temperature: float = 0.5,
-    ) -> dict:
+    ) -> tuple[dict, dict]:
         """Generate a chat completion.
 
         Args:
@@ -121,7 +122,7 @@ class OpenAIClient:
             temperature: The temperature to use for the model.
 
         Returns:
-            The response from the model.
+            The response from the model and the usage dict.
         """
         logger.debug("Generating async chat completion...")
 
@@ -141,4 +142,5 @@ class OpenAIClient:
         )
 
         message_dict: dict = response["choices"][0]["message"]
-        return message_dict
+        usage_dict: dict = response["usage"]
+        return message_dict, usage_dict
