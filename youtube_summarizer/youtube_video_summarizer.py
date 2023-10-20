@@ -111,16 +111,23 @@ class YouTubeVideoSummarizer:
                 )
             )
 
-        summaries, usage_dicts = await asyncio.gather(*tasks)
+        results = await asyncio.gather(*tasks)
 
         prompt_tokens = 0
         completion_tokens = 0
+        summary_str = ""
 
-        for usage_dict in usage_dicts:
+        for result in results:
+            summaries, usage_dict = result
             prompt_tokens += usage_dict["prompt_tokens"]
             completion_tokens += usage_dict["completion_tokens"]
 
-        return "\n".join(summaries), prompt_tokens, completion_tokens
+            if summary_str:
+                summary_str += "\n" + summaries
+            else:
+                summary_str = summaries
+
+        return summary_str, prompt_tokens, completion_tokens
 
     def _summarize_chunk(self, chunk: str, model: str) -> tuple[str, dict]:
         """Summarize a chunk of text.
