@@ -1,7 +1,12 @@
-from typing import Generator
+from typing import TYPE_CHECKING
+
 import tiktoken
+
 from youtube_summarizer.tokenizer import Tokenizer
 from youtube_summarizer.transcript import Transcript
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 def test_get_chunks_returns_expected_chunk_length() -> None:
@@ -12,7 +17,7 @@ def test_get_chunks_returns_expected_chunk_length() -> None:
     chunks: Generator[str, None, None] = transcript.get_chunks(2, tokenizer=tokenizer)
     chunks_list = list(chunks)
 
-    assert len(chunks_list) == 2
+    assert len(chunks_list) == len(transcript_strs)
 
 
 def test_get_chunks_returns_expected_chunk_content() -> None:

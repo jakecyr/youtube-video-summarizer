@@ -2,10 +2,14 @@ from youtube_summarizer.url_parser import URLParser
 
 
 class YouTubeVideo:
+
+    """Represents a YouTube video."""
+
     def __init__(self, video_url_or_id: str) -> None:
         """Initialize the YouTubeVideo instance.
 
         Args:
+        ----
             video_url_or_id: The URL or ID of the video.
         """
         if not video_url_or_id:
@@ -22,7 +26,7 @@ class YouTubeVideo:
 
             if "v" not in query_string_dict:
                 raise ValueError(
-                    "The video URL is malformed. Expected 'v' in query string."
+                    "The video URL is malformed. Expected 'v' in query string.",
                 )
 
             self.id = query_string_dict["v"]

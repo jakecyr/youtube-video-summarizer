@@ -1,4 +1,5 @@
 import pytest
+
 from youtube_summarizer.youtube_video import YouTubeVideo
 
 

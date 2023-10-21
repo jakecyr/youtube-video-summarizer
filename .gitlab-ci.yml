@@ -4,11 +4,14 @@ stages:
   - test
   - deploy
 
-pytest:
+test:
   stage: test
   script:
     - poetry install --with dev
     - poetry run pytest
+    - poetry run ruff check --fix .
+    - poetry run black .
+    - poetry run mypy .
 
 deploy-package:
   stage: deploy

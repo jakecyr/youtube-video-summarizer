@@ -1,13 +1,23 @@
-from typing import Generator
+from collections.abc import Generator
+
+from loguru import logger
 
 from youtube_summarizer.tokenizer import Tokenizer
-from loguru import logger
 
 
 class Transcript:
+
+    """Represents a video transcript."""
+
     def __init__(self, transcript_chunks: list[str]) -> None:
+        """Initialize the Transcript instance.
+
+        Args:
+        ----
+            transcript_chunks: The list of transcript chunks.
+        """
         logger.debug(
-            f"Initialized transcript instance with {len(transcript_chunks)} lines."
+            f"Initialized transcript instance with {len(transcript_chunks)} lines.",
         )
         self._transcript_chunks: list[str] = transcript_chunks
 
@@ -16,8 +26,19 @@ class Transcript:
         token_limit: int,
         tokenizer: Tokenizer,
     ) -> Generator[str, None, None]:
+        """Return a generator of transcript chunks of a given token limit.
+
+        Args:
+        ----
+            token_limit: The maximum number of tokens in each chunk.
+            tokenizer: The tokenizer to use.
+
+        Returns:
+        -------
+            A generator of transcript chunks.
+        """
         logger.debug(
-            f"Converting transcript into chunks of {token_limit} max tokens..."
+            f"Converting transcript into chunks of {token_limit} max tokens...",
         )
         transcript_str: str = ""
 

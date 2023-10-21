@@ -1,20 +1,25 @@
-from argparse import ArgumentParser, Namespace
 import asyncio
 import os
 import sys
+from argparse import ArgumentParser, Namespace
+
+from loguru import logger
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
-
-from youtube_summarizer.youtube_video_summarizer import YouTubeVideoSummarizer
 from youtube_summarizer.youtube_video import YouTubeVideo
-from loguru import logger
+from youtube_summarizer.youtube_video_summarizer import (
+    SummarizationOutputFormat,
+    VideoSummarizationMeta,
+    YouTubeVideoSummarizer,
+)
 
 # Add a new logging handler.
 logger.remove()
-logger.add(sys.stdout, level="INFO")
+logger.add(sys.stdout, level=os.environ.get("LOG_LEVEL", "INFO").upper())
 
 
 def main() -> None:
+    """Run the CLI."""
     parser = ArgumentParser()
     parser.add_argument(
         "--video-url-or-id",
@@ -53,9 +58,20 @@ def main() -> None:
     parser.add_argument(
         "--model-context-length",
         "-c",
-        help="The OpenAI Chat Completion model context length. Should correspond to the model name.",
+        help=(
+            "The OpenAI Chat Completion model context length. "
+            "Should correspond to the model name."
+        ),
         default=4096,
         type=int,
+        required=False,
+    )
+    parser.add_argument(
+        "--output-format",
+        "-o",
+        help="The output format of the summary.",
+        default=SummarizationOutputFormat.LIST.value,
+        type=str,
         required=False,
     )
 
@@ -82,17 +98,24 @@ def main() -> None:
     logger.info(f"Summarizing video {args.video_url_or_id}...")
 
     if args.run_async:
-        summary, prompt_tokens, completion_tokens = asyncio.run(
-            summarizer.summarize_async(youtube_video)
+        summarization = asyncio.run(
+            summarizer.summarize_async(youtube_video, output_format=args.output_format),
         )
     else:
-        summary, prompt_tokens, completion_tokens = summarizer.summarize(youtube_video)
+        summarization = summarizer.summarize(
+            youtube_video,
+            output_format=args.output_format,
+        )
 
-    logger.info("Summarized video.")
-    logger.info(summary)
+    meta: VideoSummarizationMeta = summarization.meta
+    prompt_tokens: int = meta.prompt_tokens
+    completion_tokens: int = meta.completion_tokens
+    total_tokens: int = prompt_tokens + completion_tokens
+
+    logger.info(f"Summarized video: {summarization.summary}")
     logger.info(f"Prompt tokens: {prompt_tokens}")
     logger.info(f"Completion tokens: {completion_tokens}")
-    logger.info(f"Total tokens: {prompt_tokens + completion_tokens}")
+    logger.info(f"Total tokens: {total_tokens}")
 
 
 if __name__ == "__main__":

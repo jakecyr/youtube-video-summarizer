@@ -9,10 +9,12 @@ from loguru import logger
 
 
 class TextGenerationError(BaseException):
+
     """Exception raised for text generation errors."""
 
 
 class ChatRole(str, Enum):
+
     """Enum representing the role options for a ChatCompletion input message."""
 
     SYSTEM = "system"
@@ -21,9 +23,11 @@ class ChatRole(str, Enum):
 
 
 class ChatCompletionMessage(TypedDict):
+
     """An input message to the ChatCompletion API endpoint.
 
     Args:
+    ----
         role: The role of the message.
         content: The content of the message.
     """
@@ -33,9 +37,11 @@ class ChatCompletionMessage(TypedDict):
 
 
 class MessageRole(str, Enum):
+
     """Enum representing the role options for a ChatCompletion input message.
 
     Args:
+    ----
         USER: The user role.
         ASSISTANT: The assistant role.
         SYSTEM: The system role.
@@ -48,9 +54,11 @@ class MessageRole(str, Enum):
 
 
 class OpenAIClient:
+
     """Client for interacting with the OpenAI API.
 
     Attributes
+    ----------
         api_key: The OpenAI API key.
     """
 
@@ -58,6 +66,7 @@ class OpenAIClient:
         """Initialize the OpenAIClient instance.
 
         Args:
+        ----
             api_key: The OpenAI API key.
         """
         if not api_key and "OPENAI_API_KEY" not in os.environ:
@@ -78,11 +87,14 @@ class OpenAIClient:
         """Generate a chat completion.
 
         Args:
+        ----
             user_prompt: The user prompt to generate the chat completion from.
             model: The model to use for the API.
+            system_prompt: The system prompt to use for the model.
             temperature: The temperature to use for the model.
 
         Returns:
+        -------
             The response from the model and the usage information.
         """
         logger.debug("Generating chat completion...")
@@ -93,7 +105,8 @@ class OpenAIClient:
 
         if system_prompt:
             messages.insert(
-                0, ChatCompletionMessage(role=ChatRole.SYSTEM, content=system_prompt)
+                0,
+                ChatCompletionMessage(role=ChatRole.SYSTEM, content=system_prompt),
             )
 
         response: Any = openai.ChatCompletion.create(
@@ -117,11 +130,14 @@ class OpenAIClient:
         """Generate a chat completion.
 
         Args:
+        ----
             user_prompt: The user prompt to generate the chat completion from.
             model: The model to use for the API.
+            system_prompt: The system prompt to use for the model.
             temperature: The temperature to use for the model.
 
         Returns:
+        -------
             The response from the model and the usage dict.
         """
         logger.debug("Generating async chat completion...")
@@ -132,7 +148,8 @@ class OpenAIClient:
 
         if system_prompt:
             messages.insert(
-                0, ChatCompletionMessage(role=ChatRole.SYSTEM, content=system_prompt)
+                0,
+                ChatCompletionMessage(role=ChatRole.SYSTEM, content=system_prompt),
             )
 
         response: Any = await openai.ChatCompletion.acreate(
