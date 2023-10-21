@@ -8,9 +8,10 @@ test:
   stage: test
   script:
     - poetry install --with dev
-    - poetry run pytest
+    - poetry run coverage run --branch --source youtube_summarizer -m pytest
+    - poetry run coverage report --show-missing --fail-under=50
     - poetry run ruff check --fix .
-    - poetry run black .
+    - poetry run black --check .
     - poetry run mypy .
 
 deploy-package:
