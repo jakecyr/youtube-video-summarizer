@@ -127,6 +127,10 @@ class YouTubeVideoQA:
                 temperature=temperature,
             )
 
+            logger.debug(f"Usage: {usage}")
+            prompt_tokens += usage["prompt_tokens"]
+            completion_tokens += usage["completion_tokens"]
+
             if answer:
                 logger.debug(f"Found answer: {answer}")
 
@@ -141,10 +145,6 @@ class YouTubeVideoQA:
                 )
             else:
                 logger.debug(f"No answer found in chunk.")
-
-            logger.debug(f"Usage: {usage}")
-            prompt_tokens += usage["prompt_tokens"]
-            completion_tokens += usage["completion_tokens"]
 
         return VideoQAResponse(
             video_id=youtube_video.id,
@@ -205,7 +205,7 @@ if __name__ == "__main__":
     openai_client = OpenAIClient()
     video_qa = YouTubeVideoQA(openai_client=openai_client)
     answer: VideoQAResponse = video_qa.answer_question(
-        YouTubeVideo("RmjHyFM525Q"), "What service does Matt use to make websites?"
+        YouTubeVideo("8W_FO_m1fTw"), "what database service is used"
     )
 
     print(answer)
