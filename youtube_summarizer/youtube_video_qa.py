@@ -19,7 +19,7 @@ ANSWER_NOT_FOUND = "ANSWER_NOT_FOUND"
 
 QA_SYSTEM_PROMPT: str = (
     "You are a YouTube question answer bot. Given a YouTube video transcript chunk "
-    f"either return the answer to the question, or {ANSWER_NOT_FOUND} if the answer "
+    f"either return a concise answer to the question, or {ANSWER_NOT_FOUND} if the answer "
     "cannot be found in the provided context."
 )
 
@@ -45,7 +45,6 @@ class VideoQAResponse(NamedTuple):
     """An object with the question and answer from the video."""
 
     video_id: str
-    summary: list[str]
     question: str
     answer: str | None
     meta: VideoSummarizationMeta
@@ -73,8 +72,10 @@ class YouTubeVideoQA:
         self._openai_client: OpenAIClient = openai_client
         self._tokenizer = Tokenizer(tiktoken.encoding_for_model(model_name))
         self._model_name: str = model_name
-        self._token_limit: int = token_limit
         self._system_prompt: str = QA_SYSTEM_PROMPT
+        self._token_limit: int = token_limit - self._tokenizer.count_tokens(
+            self._system_prompt
+        )
 
     def answer_question(
         self,
@@ -82,28 +83,39 @@ class YouTubeVideoQA:
         question: str,
         *,
         temperature: float = 0.1,
+        min_new_tokens: int = 100,
     ) -> VideoQAResponse:
-        """Ask a question about a YouTube video and get a response.
+        """Ask a question about a YouTube video and get an answer if one exists.
 
         Args:
         ----
           youtube_video: The URL of the video to summarize.
           question: The question to ask.
           temperature: The temperature to use for the model.
+          min_new_tokens: The minimum number of tokens to allow for a response.
 
         Returns:
         -------
-          An object containing the answer and meta information.
+          An object containing the answer and meta information. The answer is
+          None if no answer is found.
         """
         logger.debug(f"Answering question with video {youtube_video.id}...")
         transcript: Transcript = YouTubeTranscriptClient.get_transcript(
             video_id=youtube_video.id,
         )
+        chunk_prompt_tokens: int = self._tokenizer.count_tokens(
+            QA_CHUNK_PROMPT.format(
+                chunk="",
+                question=question,
+            )
+        )
+        chunk_prompt_tokens_remaining: int = (
+            self._token_limit - chunk_prompt_tokens - min_new_tokens
+        )
         transcript_chunks: Generator[str, None, None] = transcript.get_chunks(
-            self._token_limit,
+            chunk_prompt_tokens_remaining,
             self._tokenizer,
         )
-        summaries: list[str] = []
         prompt_tokens = 0
         completion_tokens = 0
 
@@ -120,7 +132,6 @@ class YouTubeVideoQA:
 
                 return VideoQAResponse(
                     video_id=youtube_video.id,
-                    summary=summaries,
                     question=question,
                     answer=answer,
                     meta=VideoSummarizationMeta(
@@ -137,7 +148,6 @@ class YouTubeVideoQA:
 
         return VideoQAResponse(
             video_id=youtube_video.id,
-            summary=summaries,
             question=question,
             answer=None,
             meta=VideoSummarizationMeta(
