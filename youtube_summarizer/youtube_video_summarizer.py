@@ -132,7 +132,6 @@ class YouTubeVideoSummarizer:
             self._tokenizer,
         )
         summaries: list[str] = []
-        all_chunks: list[str] = []
         prompt_tokens = 0
         completion_tokens = 0
 
@@ -145,7 +144,6 @@ class YouTubeVideoSummarizer:
             logger.debug(f"Summarized chunk: {summary}")
             logger.debug(f"Usage: {usage}")
             summaries.append(summary)
-            all_chunks.append(chunk)
             prompt_tokens += usage["prompt_tokens"]
             completion_tokens += usage["completion_tokens"]
 
@@ -221,7 +219,7 @@ class YouTubeVideoSummarizer:
             summaries, usage_dict = result
             prompt_tokens += usage_dict["prompt_tokens"]
             completion_tokens += usage_dict["completion_tokens"]
-            logger.debug(f'summary: "{summaries}"')
+            logger.debug(f'Summary: "{summaries}"')
             summary_chunks.append(summaries)
 
         meta_information = VideoSummarizationMeta(
