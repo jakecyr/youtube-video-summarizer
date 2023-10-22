@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 import tiktoken
 from loguru import logger
+from youtube_summarizer.video_usage_meta import VideoUsageMeta
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
 from youtube_summarizer.clients.youtube_transcript_client import YouTubeTranscriptClient
@@ -28,21 +29,13 @@ DETAILED_SUMMARIZATION_SYSTEM_PROMPT = (
 )
 
 
-class VideoSummarizationMeta(NamedTuple):
-
-    """Meta information about the video summary."""
-
-    prompt_tokens: int
-    completion_tokens: int
-
-
 class VideoSummarizationBulletedList(NamedTuple):
 
     """A string summary of a YouTube video as bulleted list."""
 
     video_id: str
     summary: str
-    meta: VideoSummarizationMeta
+    meta: VideoUsageMeta
 
 
 class VideoSummarizationList(NamedTuple):
@@ -51,7 +44,7 @@ class VideoSummarizationList(NamedTuple):
 
     video_id: str
     summary: list[str]
-    meta: VideoSummarizationMeta
+    meta: VideoUsageMeta
 
 
 class SummarizationOutputFormat(str, Enum):
@@ -147,7 +140,7 @@ class YouTubeVideoSummarizer:
             prompt_tokens += usage["prompt_tokens"]
             completion_tokens += usage["completion_tokens"]
 
-        meta_information = VideoSummarizationMeta(
+        meta_information = VideoUsageMeta(
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
         )
@@ -222,7 +215,7 @@ class YouTubeVideoSummarizer:
             logger.debug(f'Summary: "{summaries}"')
             summary_chunks.append(summaries)
 
-        meta_information = VideoSummarizationMeta(
+        meta_information = VideoUsageMeta(
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
         )
@@ -237,7 +230,7 @@ class YouTubeVideoSummarizer:
         self,
         video_id: str,
         summary_chunks: list[str],
-        meta_information: VideoSummarizationMeta,
+        meta_information: VideoUsageMeta,
         output_format: SummarizationOutputFormat | str,
     ) -> VideoSummarizationBulletedList | VideoSummarizationList:
         if output_format == SummarizationOutputFormat.BULLETED_LIST:

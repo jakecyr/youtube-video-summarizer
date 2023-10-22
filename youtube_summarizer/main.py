@@ -4,12 +4,12 @@ import sys
 from argparse import ArgumentParser, Namespace
 
 from loguru import logger
+from youtube_summarizer.video_usage_meta import VideoUsageMeta
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
 from youtube_summarizer.youtube_video import YouTubeVideo
 from youtube_summarizer.youtube_video_summarizer import (
     SummarizationOutputFormat,
-    VideoSummarizationMeta,
     YouTubeVideoSummarizer,
 )
 
@@ -107,7 +107,7 @@ def main() -> None:
             output_format=args.output_format,
         )
 
-    meta: VideoSummarizationMeta = summarization.meta
+    meta: VideoUsageMeta = summarization.meta
     prompt_tokens: int = meta.prompt_tokens
     completion_tokens: int = meta.completion_tokens
     total_tokens: int = prompt_tokens + completion_tokens

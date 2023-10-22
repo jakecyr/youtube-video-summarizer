@@ -6,6 +6,7 @@ from loguru import logger
 from youtube_summarizer.clients.openai_client import OpenAIClient
 from youtube_summarizer.clients.youtube_transcript_client import YouTubeTranscriptClient
 from youtube_summarizer.tokenizer import Tokenizer
+from youtube_summarizer.video_usage_meta import VideoUsageMeta
 from youtube_summarizer.youtube_video import YouTubeVideo
 
 if TYPE_CHECKING:
@@ -32,14 +33,6 @@ Question:
 """
 
 
-class VideoSummarizationMeta(NamedTuple):
-
-    """Meta information about the video summary."""
-
-    prompt_tokens: int
-    completion_tokens: int
-
-
 class VideoQAResponse(NamedTuple):
 
     """An object with the question and answer from the video."""
@@ -47,7 +40,7 @@ class VideoQAResponse(NamedTuple):
     video_id: str
     question: str
     answer: str | None
-    meta: VideoSummarizationMeta
+    meta: VideoUsageMeta
 
 
 class YouTubeVideoQA:
@@ -138,7 +131,7 @@ class YouTubeVideoQA:
                     video_id=youtube_video.id,
                     question=question,
                     answer=answer,
-                    meta=VideoSummarizationMeta(
+                    meta=VideoUsageMeta(
                         prompt_tokens=prompt_tokens,
                         completion_tokens=completion_tokens,
                     ),
@@ -150,7 +143,7 @@ class YouTubeVideoQA:
             video_id=youtube_video.id,
             question=question,
             answer=None,
-            meta=VideoSummarizationMeta(
+            meta=VideoUsageMeta(
                 prompt_tokens=prompt_tokens,
                 completion_tokens=completion_tokens,
             ),
