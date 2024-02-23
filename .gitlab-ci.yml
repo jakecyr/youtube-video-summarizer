@@ -11,7 +11,7 @@ test:
     - poetry run coverage run --branch --source youtube_summarizer -m pytest
     - poetry run coverage report --show-missing --fail-under=50
     - poetry run ruff check --fix .
-    - poetry run black --check .
+    - poetry run ruff format --check .
     - poetry run mypy .
 
 deploy-package:
