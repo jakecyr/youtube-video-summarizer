@@ -14,7 +14,7 @@ from youtube_summarizer.youtube_video_summarizer import (
 )
 
 if TYPE_CHECKING:
-    from youtube_summarizer.video_usage_meta import VideoUsageMeta
+    from youtube_summarizer.types.video_usage_meta import VideoUsageMeta
 
 # Add a new logging handler.
 logger.remove()
@@ -94,7 +94,6 @@ def main() -> None:
         openai_client=openai_client,
         model_name=args.model_name,
         token_limit=args.model_context_length,
-        detailed_summary=args.detailed,
     )
     youtube_video = YouTubeVideo(args.video_url_or_id)
 
@@ -102,12 +101,15 @@ def main() -> None:
 
     if args.run_async:
         summarization = asyncio.run(
-            summarizer.summarize_async(youtube_video, output_format=args.output_format),
+            summarizer.summarize_async(
+                youtube_video, output_format=args.output_format, detailed=args.detailed
+            ),
         )
     else:
         summarization = summarizer.summarize(
             youtube_video,
             output_format=args.output_format,
+            detailed=args.detailed,
         )
 
     meta: VideoUsageMeta = summarization.meta
@@ -119,7 +121,3 @@ def main() -> None:
     logger.info(f"Prompt tokens: {prompt_tokens}")
     logger.info(f"Completion tokens: {completion_tokens}")
     logger.info(f"Total tokens: {total_tokens}")
-
-
-if __name__ == "__main__":
-    main()

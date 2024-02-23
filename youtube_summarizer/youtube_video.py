@@ -1,4 +1,4 @@
-from youtube_summarizer.url_parser import URLParser
+from youtube_summarizer.utils.url_parser import URLParser
 
 
 class YouTubeVideo:

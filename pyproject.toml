@@ -20,6 +20,9 @@ pytest = "^7.4.2"
 coverage = "^7.3.2"
 ruff = "^0.2.2"
 
+[tool.poetry.scripts]
+summarize_video = 'youtube_summarizer.cli.entrypoint:main'
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

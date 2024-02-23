@@ -7,14 +7,14 @@ from loguru import logger
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
 from youtube_summarizer.clients.youtube_transcript_client import YouTubeTranscriptClient
-from youtube_summarizer.tokenizer import Tokenizer
-from youtube_summarizer.video_usage_meta import VideoUsageMeta
+from youtube_summarizer.types.video_usage_meta import VideoUsageMeta
+from youtube_summarizer.utils.tokenizer import Tokenizer
 from youtube_summarizer.youtube_video import YouTubeVideo
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from youtube_summarizer.transcript import Transcript
+    from youtube_summarizer.video_transcript import VideoTranscript
 
 GPT_35_TURBO_TOKEN_LIMIT = 4096
 
@@ -65,7 +65,6 @@ class YouTubeVideoSummarizer:
         *,
         model_name="gpt-3.5-turbo",
         token_limit=GPT_35_TURBO_TOKEN_LIMIT,
-        detailed_summary: bool = False,
     ) -> None:
         """Initialize the YouTubeVideoSummarizer instance.
 
@@ -74,18 +73,12 @@ class YouTubeVideoSummarizer:
           openai_client: The OpenAI API client.
           model_name: The chat completion model to use for summarization.
           token_limit: The maximum number of tokens to use for summarization.
-          detailed_summary: Whether to generate a detailed or short summary.
 
         """
         self._openai_client: OpenAIClient = openai_client
         self._tokenizer = Tokenizer(tiktoken.encoding_for_model(model_name))
         self._model_name: str = model_name
         self._token_limit: int = token_limit
-        self._system_prompt: str = (
-            DETAILED_SUMMARIZATION_SYSTEM_PROMPT
-            if detailed_summary
-            else SUMMARIZATION_SYSTEM_PROMPT
-        )
 
     def summarize(
         self,
@@ -93,6 +86,7 @@ class YouTubeVideoSummarizer:
         *,
         output_format: SummarizationOutputFormat | str = SummarizationOutputFormat.LIST,
         temperature: float = 0.1,
+        detailed: bool = False,
     ) -> VideoSummarizationBulletedList | VideoSummarizationList:
         """Summarize a YouTube video.
 
@@ -101,6 +95,7 @@ class YouTubeVideoSummarizer:
           youtube_video: The URL of the video to summarize.
           output_format: The format to return the summary in.
           temperature: The temperature to use for the model.
+          detailed: Whether to return detailed summaries.
 
         Returns:
         -------
@@ -118,7 +113,7 @@ class YouTubeVideoSummarizer:
 
         logger.debug(f"Summarizing video {youtube_video.id}...")
 
-        transcript: Transcript = YouTubeTranscriptClient.get_transcript(
+        transcript: VideoTranscript = YouTubeTranscriptClient.get_transcript(
             video_id=youtube_video.id,
         )
         transcript_chunks: Generator[str, None, None] = transcript.get_chunks(
@@ -131,9 +126,10 @@ class YouTubeVideoSummarizer:
 
         for chunk in transcript_chunks:
             summary, usage = self._summarize_chunk(
-                chunk,
-                self._model_name,
+                chunk=chunk,
+                model=self._model_name,
                 temperature=temperature,
+                detailed=detailed,
             )
             logger.debug(f"Summarized chunk: {summary}")
             logger.debug(f"Usage: {usage}")
@@ -159,6 +155,7 @@ class YouTubeVideoSummarizer:
         *,
         output_format: SummarizationOutputFormat | str = SummarizationOutputFormat.LIST,
         temperature: float = 0.1,
+        detailed: bool = False,
     ) -> VideoSummarizationBulletedList | VideoSummarizationList:
         """Summarize a YouTube video.
 
@@ -167,6 +164,7 @@ class YouTubeVideoSummarizer:
           youtube_video: The URL of the video to summarize.
           output_format: The format to return the summary in.
           temperature: The temperature to use for the model.
+          detailed: Whether to return detailed summaries.
 
         Returns:
         -------
@@ -184,7 +182,7 @@ class YouTubeVideoSummarizer:
 
         logger.debug(f"Summarizing video {youtube_video.id}...")
 
-        transcript: Transcript = YouTubeTranscriptClient.get_transcript(
+        transcript: VideoTranscript = YouTubeTranscriptClient.get_transcript(
             video_id=youtube_video.id,
         )
         transcript_chunks: Generator[str, None, None] = transcript.get_chunks(
@@ -197,9 +195,10 @@ class YouTubeVideoSummarizer:
             tasks.append(
                 asyncio.create_task(
                     self._summarize_chunk_async(
-                        chunk,
-                        self._model_name,
+                        chunk=chunk,
+                        model=self._model_name,
                         temperature=temperature,
+                        detailed=detailed,
                     ),
                 ),
             )
@@ -266,6 +265,7 @@ class YouTubeVideoSummarizer:
         model: str,
         *,
         temperature: float = 0.1,
+        detailed: bool = False,
     ) -> tuple[str, dict]:
         """Summarize a chunk of text.
 
@@ -274,6 +274,7 @@ class YouTubeVideoSummarizer:
           chunk: The chunk of text to summarize.
           model: The model to use for the API.
           temperature: The temperature to use for the model.
+          detailed: Whether to return detailed summaries.
 
         Returns:
         -------
@@ -282,11 +283,16 @@ class YouTubeVideoSummarizer:
         """
         logger.debug(f"Summarizing chunk with model {model}...")
 
+        system_prompt: str = (
+            DETAILED_SUMMARIZATION_SYSTEM_PROMPT
+            if detailed
+            else SUMMARIZATION_SYSTEM_PROMPT
+        )
         response, usage = self._openai_client.generate_chat_completion(
             user_prompt=chunk,
             model=model,
             temperature=temperature,
-            system_prompt=self._system_prompt,
+            system_prompt=system_prompt,
         )
 
         return response["content"], usage
@@ -297,6 +303,7 @@ class YouTubeVideoSummarizer:
         model: str,
         *,
         temperature: float = 0.1,
+        detailed: bool = False,
     ) -> tuple[str, dict]:
         """Summarize a chunk of text.
 
@@ -305,6 +312,7 @@ class YouTubeVideoSummarizer:
           chunk: The chunk of text to summarize.
           model: The model to use for the API.
           temperature: The temperature to use for the model.
+          detailed: Whether to return detailed summaries.
 
         Returns:
         -------
@@ -313,11 +321,16 @@ class YouTubeVideoSummarizer:
         """
         logger.debug(f"Summarizing chunk async with model {model}...")
 
+        system_prompt: str = (
+            DETAILED_SUMMARIZATION_SYSTEM_PROMPT
+            if detailed
+            else SUMMARIZATION_SYSTEM_PROMPT
+        )
         response, usage = await self._openai_client.generate_chat_completion_async(
             user_prompt=chunk,
             model=model,
             temperature=temperature,
-            system_prompt=self._system_prompt,
+            system_prompt=system_prompt,
         )
 
         return response["content"], usage

@@ -5,14 +5,14 @@ from loguru import logger
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
 from youtube_summarizer.clients.youtube_transcript_client import YouTubeTranscriptClient
-from youtube_summarizer.tokenizer import Tokenizer
-from youtube_summarizer.video_usage_meta import VideoUsageMeta
+from youtube_summarizer.types.video_usage_meta import VideoUsageMeta
+from youtube_summarizer.utils.tokenizer import Tokenizer
 from youtube_summarizer.youtube_video import YouTubeVideo
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from youtube_summarizer.transcript import Transcript
+    from youtube_summarizer.video_transcript import VideoTranscript
 
 GPT_35_TURBO_TOKEN_LIMIT = 4096
 
@@ -95,7 +95,7 @@ class YouTubeVideoQA:
 
         """
         logger.debug(f"Answering question with video {youtube_video.id}...")
-        transcript: Transcript = YouTubeTranscriptClient.get_transcript(
+        transcript: VideoTranscript = YouTubeTranscriptClient.get_transcript(
             video_id=youtube_video.id,
         )
         chunk_prompt_tokens: int = self._tokenizer.count_tokens(

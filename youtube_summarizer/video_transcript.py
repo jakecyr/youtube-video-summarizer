@@ -2,10 +2,10 @@ from collections.abc import Generator
 
 from loguru import logger
 
-from youtube_summarizer.tokenizer import Tokenizer
+from youtube_summarizer.utils.tokenizer import Tokenizer
 
 
-class Transcript:
+class VideoTranscript:
 
     """Represents a video transcript."""
 

@@ -1,7 +1,7 @@
 from loguru import logger
 from youtube_transcript_api import YouTubeTranscriptApi  # type: ignore[import]
 
-from youtube_summarizer.transcript import Transcript
+from youtube_summarizer.video_transcript import VideoTranscript
 
 
 class YouTubeTranscriptClient:
@@ -9,7 +9,7 @@ class YouTubeTranscriptClient:
     """A client for the YouTube Transcript API."""
 
     @staticmethod
-    def get_transcript(video_id: str) -> Transcript:
+    def get_transcript(video_id: str) -> VideoTranscript:
         """Get the transcript of a video.
 
         Args:
@@ -32,4 +32,4 @@ class YouTubeTranscriptClient:
         for line in transcript:
             transcript_chunks.append(line["text"])
 
-        return Transcript(transcript_chunks)
+        return VideoTranscript(transcript_chunks)
