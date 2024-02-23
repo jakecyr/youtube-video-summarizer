@@ -20,8 +20,8 @@ ANSWER_NOT_FOUND = "ANSWER_NOT_FOUND"
 
 QA_SYSTEM_PROMPT: str = (
     "You are a YouTube question answer bot. Given a YouTube video transcript chunk "
-    f"either return a concise answer to the question, or {ANSWER_NOT_FOUND} if the answer "
-    "cannot be found in the provided context."
+    f"either return a concise answer to the question, or {ANSWER_NOT_FOUND} "
+    "if the answer cannot be found in the provided context."
 )
 
 QA_CHUNK_PROMPT: str = """

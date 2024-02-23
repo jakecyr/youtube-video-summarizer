@@ -2,16 +2,19 @@ import asyncio
 import os
 import sys
 from argparse import ArgumentParser, Namespace
+from typing import TYPE_CHECKING
 
 from loguru import logger
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
-from youtube_summarizer.video_usage_meta import VideoUsageMeta
 from youtube_summarizer.youtube_video import YouTubeVideo
 from youtube_summarizer.youtube_video_summarizer import (
     SummarizationOutputFormat,
     YouTubeVideoSummarizer,
 )
+
+if TYPE_CHECKING:
+    from youtube_summarizer.video_usage_meta import VideoUsageMeta
 
 # Add a new logging handler.
 logger.remove()
