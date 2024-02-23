@@ -11,6 +11,7 @@ class Tokenizer:
         Args:
         ----
             encoding: The encoding to use.
+
         """
         self._encoding: tiktoken.Encoding = encoding
 
@@ -24,6 +25,7 @@ class Tokenizer:
         Returns:
         -------
             A list of tokens.
+
         """
         return self._encoding.encode(text)
 
@@ -37,6 +39,7 @@ class Tokenizer:
         Returns:
         -------
             The decoded string.
+
         """
         return self._encoding.decode(encodings)
 
@@ -50,5 +53,6 @@ class Tokenizer:
         Returns:
         -------
             The number of tokens.
+
         """
         return len(self.encode(text))

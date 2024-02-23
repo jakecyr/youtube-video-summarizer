@@ -11,6 +11,7 @@ class URLParser:
         Args:
         ----
             url: The URL to parse.
+
         """
         self._result: ParseResult = urlparse(url)
 
@@ -21,6 +22,7 @@ class URLParser:
         Returns
         -------
             A string representing the scheme of the URL.
+
         """
         return self._result.scheme
 
@@ -31,6 +33,7 @@ class URLParser:
         Returns
         -------
             A string representing the host of the URL.
+
         """
         return self._result.netloc
 
@@ -41,6 +44,7 @@ class URLParser:
         Returns
         -------
             A string representing the path of the URL.
+
         """
         return self._result.path
 
@@ -51,6 +55,7 @@ class URLParser:
         Returns
         -------
             A string representing the fragment of the URL.
+
         """
         return self._result.fragment
 
@@ -61,6 +66,7 @@ class URLParser:
         Returns
         -------
             A string representing the query string of the URL.
+
         """
         return self._result.query
 
@@ -70,5 +76,6 @@ class URLParser:
         Returns
         -------
             A dictionary representing the query string of the URL.
+
         """
         return dict(parse_qsl(self.query_string))

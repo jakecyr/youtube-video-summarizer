@@ -61,6 +61,7 @@ class YouTubeVideoQA:
           openai_client: The OpenAI API client.
           model_name: The chat completion model to use for summarization.
           token_limit: The maximum number of tokens to use for summarization.
+
         """
         self._openai_client: OpenAIClient = openai_client
         self._tokenizer = Tokenizer(tiktoken.encoding_for_model(model_name))
@@ -91,6 +92,7 @@ class YouTubeVideoQA:
         -------
           An object containing the answer and meta information. The answer is
           None if no answer is found.
+
         """
         logger.debug(f"Answering question with video {youtube_video.id}...")
         transcript: Transcript = YouTubeTranscriptClient.get_transcript(
@@ -136,8 +138,6 @@ class YouTubeVideoQA:
                         completion_tokens=completion_tokens,
                     ),
                 )
-            else:
-                logger.debug(f"No answer found in chunk.")
 
         return VideoQAResponse(
             video_id=youtube_video.id,
@@ -169,6 +169,7 @@ class YouTubeVideoQA:
         Returns:
         -------
           The answer found or None if no answer is found.
+
         """
         logger.debug(f"Trying to answer question with chunk using model {model}...")
 
@@ -187,18 +188,3 @@ class YouTubeVideoQA:
             return None, usage
 
         return response["content"], usage
-
-
-if __name__ == "__main__":
-    from dotenv import load_dotenv
-    from youtube_summarizer.clients.openai_client import OpenAIClient
-
-    load_dotenv()
-
-    openai_client = OpenAIClient()
-    video_qa = YouTubeVideoQA(openai_client=openai_client)
-    answer: VideoQAResponse = video_qa.answer_question(
-        YouTubeVideo("8W_FO_m1fTw"), "what database service is used"
-    )
-
-    print(answer)

@@ -30,6 +30,7 @@ class ChatCompletionMessage(TypedDict):
     ----
         role: The role of the message.
         content: The content of the message.
+
     """
 
     role: ChatRole
@@ -45,6 +46,7 @@ class MessageRole(str, Enum):
         USER: The user role.
         ASSISTANT: The assistant role.
         SYSTEM: The system role.
+
     """
 
     __slots__ = ()
@@ -60,6 +62,7 @@ class OpenAIClient:
     Attributes
     ----------
         api_key: The OpenAI API key.
+
     """
 
     def __init__(self, api_key: str | None = None) -> None:
@@ -68,6 +71,7 @@ class OpenAIClient:
         Args:
         ----
             api_key: The OpenAI API key.
+
         """
         if not api_key and "OPENAI_API_KEY" not in os.environ:
             raise ValueError(
@@ -96,6 +100,7 @@ class OpenAIClient:
         Returns:
         -------
             The response from the model and the usage information.
+
         """
         logger.debug("Generating chat completion...")
 
@@ -139,6 +144,7 @@ class OpenAIClient:
         Returns:
         -------
             The response from the model and the usage dict.
+
         """
         logger.debug("Generating async chat completion...")
 

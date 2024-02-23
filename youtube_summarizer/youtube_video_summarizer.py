@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING, NamedTuple
 
 import tiktoken
 from loguru import logger
-from youtube_summarizer.video_usage_meta import VideoUsageMeta
 
 from youtube_summarizer.clients.openai_client import OpenAIClient
 from youtube_summarizer.clients.youtube_transcript_client import YouTubeTranscriptClient
 from youtube_summarizer.tokenizer import Tokenizer
+from youtube_summarizer.video_usage_meta import VideoUsageMeta
 from youtube_summarizer.youtube_video import YouTubeVideo
 
 if TYPE_CHECKING:
@@ -75,6 +75,7 @@ class YouTubeVideoSummarizer:
           model_name: The chat completion model to use for summarization.
           token_limit: The maximum number of tokens to use for summarization.
           detailed_summary: Whether to generate a detailed or short summary.
+
         """
         self._openai_client: OpenAIClient = openai_client
         self._tokenizer = Tokenizer(tiktoken.encoding_for_model(model_name))
@@ -108,10 +109,10 @@ class YouTubeVideoSummarizer:
         Raises:
         ------
           ValueError: If the output format is invalid.
+
         """
         if (
-            output_format
-            not in SummarizationOutputFormat._value2member_map_  # noqa: SLF001
+            output_format not in SummarizationOutputFormat._value2member_map_  # noqa: SLF001
         ):
             raise ValueError(f"Invalid output format: {output_format}.")
 
@@ -174,10 +175,10 @@ class YouTubeVideoSummarizer:
         Raises:
         ------
           ValueError: If the output format is invalid.
+
         """
         if (
-            output_format
-            not in SummarizationOutputFormat._value2member_map_  # noqa: SLF001
+            output_format not in SummarizationOutputFormat._value2member_map_  # noqa: SLF001
         ):
             raise ValueError(f"Invalid output format: {output_format}.")
 
@@ -277,6 +278,7 @@ class YouTubeVideoSummarizer:
         Returns:
         -------
           The summarized chunk and usage.
+
         """
         logger.debug(f"Summarizing chunk with model {model}...")
 
@@ -307,6 +309,7 @@ class YouTubeVideoSummarizer:
         Returns:
         -------
           The summarized chunk and usage.
+
         """
         logger.debug(f"Summarizing chunk async with model {model}...")
 

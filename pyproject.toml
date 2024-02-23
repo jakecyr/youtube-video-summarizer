@@ -4,7 +4,7 @@ version = "0.5.1"
 description = "Summarize YouTube videos using GPT models."
 authors = ["Jake Cyr <cyrjake@gmail.com>"]
 readme = "README.md"
-packages = [{include = "youtube_summarizer"}]
+packages = [{ include = "youtube_summarizer" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -12,17 +12,13 @@ openai = "^0.28.1"
 tiktoken = "^0.5.1"
 youtube-transcript-api = "^0.6.1"
 loguru = "^0.7.2"
-
-[tool.poetry.group.dev]
-optional = true
+python-dotenv = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.5.1"
-black = "^23.9.1"
-ruff = "^0.0.292"
 pytest = "^7.4.2"
 coverage = "^7.3.2"
-python-dotenv = "^1.0.0"
+ruff = "^0.2.2"
 
 [build-system]
 requires = ["poetry-core"]

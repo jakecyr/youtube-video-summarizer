@@ -19,6 +19,7 @@ class YouTubeTranscriptClient:
         Returns:
         -------
             The transcript of the video.
+
         """
         transcript: dict = YouTubeTranscriptApi.get_transcript(video_id)
         transcript_chunks: list[str] = []

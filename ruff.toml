@@ -1,4 +1,5 @@
-select = [
+
+lint.select = [
   "E",
   "F",
   "B",
@@ -41,9 +42,19 @@ select = [
   "FLY",
   "RUF",
 ]
-ignore = ["D207", "D208", "D211", "D213", "D100", "EM102", "EM101"]
+lint.ignore = [
+  "D207",
+  "D208",
+  "D211",
+  "D213",
+  "D100",
+  "EM102",
+  "EM101",
+  "COM812",
+  "ISC001",
+]
 target-version = "py310"
 line-length = 88
-fixable = ["ALL"]
-[per-file-ignores]
+lint.fixable = ["ALL"]
+[lint.per-file-ignores]
 "**/{tests}/*" = ["S101", "D103"]

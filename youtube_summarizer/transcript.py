@@ -15,6 +15,7 @@ class Transcript:
         Args:
         ----
             transcript_chunks: The list of transcript chunks.
+
         """
         logger.debug(
             f"Initialized transcript instance with {len(transcript_chunks)} lines.",
@@ -36,6 +37,7 @@ class Transcript:
         Returns:
         -------
             A generator of transcript chunks.
+
         """
         logger.debug(
             f"Converting transcript into chunks of {token_limit} max tokens...",

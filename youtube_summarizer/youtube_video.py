@@ -11,6 +11,7 @@ class YouTubeVideo:
         Args:
         ----
             video_url_or_id: The URL or ID of the video.
+
         """
         if not video_url_or_id:
             raise ValueError("The video URL or ID is empty.")
