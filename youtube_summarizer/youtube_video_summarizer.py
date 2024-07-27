@@ -11,7 +11,7 @@ from youtube_summarizer.types.video_usage_meta import VideoUsageMeta
 from youtube_summarizer.utils.tokenizer import Tokenizer
 from youtube_summarizer.youtube_video import YouTubeVideo
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from collections.abc import Generator
 
     from youtube_summarizer.video_transcript import VideoTranscript

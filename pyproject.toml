@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "youtube-video-summarizer"
-version = "0.5.1"
+version = "0.5.2"
 description = "Summarize YouTube videos using GPT models."
 authors = ["Jake Cyr <cyrjake@gmail.com>"]
 readme = "README.md"
@@ -9,7 +9,7 @@ packages = [{ include = "youtube_summarizer" }]
 [tool.poetry.dependencies]
 python = "^3.10"
 openai = "^0.28.1"
-tiktoken = "^0.5.1"
+tiktoken = "^0.7.0"
 youtube-transcript-api = "^0.6.1"
 loguru = "^0.7.2"
 python-dotenv = "^1.0.0"

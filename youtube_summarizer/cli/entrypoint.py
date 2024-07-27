@@ -121,3 +121,7 @@ def main() -> None:
     logger.info(f"Prompt tokens: {prompt_tokens}")
     logger.info(f"Completion tokens: {completion_tokens}")
     logger.info(f"Total tokens: {total_tokens}")
+
+
+if __name__ == "__main__":
+    main()
