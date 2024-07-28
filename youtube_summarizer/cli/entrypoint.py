@@ -13,7 +13,7 @@ from youtube_summarizer.youtube_video_summarizer import (
     YouTubeVideoSummarizer,
 )
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from youtube_summarizer.types.video_usage_meta import VideoUsageMeta
 
 # Add a new logging handler.
