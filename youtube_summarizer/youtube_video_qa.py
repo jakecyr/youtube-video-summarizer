@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from youtube_summarizer.video_transcript import VideoTranscript
 
 GPT_35_TURBO_TOKEN_LIMIT = 4096
+GPT_4O_MINI_TOKEN_LIMIT = 128000
 
 ANSWER_NOT_FOUND = "ANSWER_NOT_FOUND"
 
@@ -51,8 +52,8 @@ class YouTubeVideoQA:
         self,
         openai_client: OpenAIClient,
         *,
-        model_name="gpt-3.5-turbo",
-        token_limit=GPT_35_TURBO_TOKEN_LIMIT,
+        model_name="gpt-4o-mini-2024-07-18",
+        token_limit=GPT_4O_MINI_TOKEN_LIMIT,
     ) -> None:
         """Initialize the YouTubeVideoSummarizer instance.
 

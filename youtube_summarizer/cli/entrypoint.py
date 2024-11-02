@@ -54,7 +54,7 @@ def main() -> None:
         "--model-name",
         "-m",
         help="The OpenAI Chat Completion model name to use.",
-        default="gpt-3.5-turbo",
+        default="gpt-4o-mini-2024-07-18",
         type=str,
         required=False,
     )
@@ -65,7 +65,7 @@ def main() -> None:
             "The OpenAI Chat Completion model context length. "
             "Should correspond to the model name."
         ),
-        default=4096,
+        default=20000,
         type=int,
         required=False,
     )

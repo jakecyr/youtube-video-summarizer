@@ -84,7 +84,7 @@ class OpenAIClient:
         self,
         user_prompt: str,
         *,
-        model: str = "gpt-3.5-turbo-0613",
+        model: str = "gpt-4o-mini-2024-07-18",
         system_prompt: str | None = None,
         temperature: float = 0.5,
     ) -> tuple[dict, dict]:
@@ -128,7 +128,7 @@ class OpenAIClient:
         self,
         user_prompt: str,
         *,
-        model: str = "gpt-3.5-turbo-0613",
+        model: str = "gpt-4o-mini-2024-07-18",
         system_prompt: str | None = None,
         temperature: float = 0.5,
     ) -> tuple[dict, dict]:
